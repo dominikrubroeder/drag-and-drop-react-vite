@@ -1,4 +1,5 @@
 import {TreeNode} from "./tree-node.tsx";
+import {type ChangeEvent, useState} from "react";
 
 export interface FileNode {
     id: string;
@@ -55,13 +56,22 @@ export const fileTreeData: FileNode[] = [
 ];
 
 export function FileTree() {
-    return <div className="space-y-4 flex-1 w-[300px] gridg gap-4 px-4">
-        <input className="rounded border focus:outline-none px-4 py-3 border-gray-200" type="text"
+    const [searchValue, setSearchValue] = useState<undefined | string>(undefined);
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        e.target.value.trim() === '' ? setSearchValue(undefined) : setSearchValue(e.target.value);
+    };
+
+    return <div className="space-y-4 flex-1 w-[300px] gap-4">
+        <input type="text"
+               value={searchValue}
+               onChange={handleChange}
+               className="rounded w-full border focus:outline-none px-4 py-3 border-gray-200"
                placeholder="Search..."/>
 
         <ul className="space-y-2">
             {fileTreeData.map((node) => <li key={node.id}>
-                <TreeNode node={node}/>
+                <TreeNode node={node} searchValue={searchValue}/>
             </li>)}
         </ul>
     </div>
